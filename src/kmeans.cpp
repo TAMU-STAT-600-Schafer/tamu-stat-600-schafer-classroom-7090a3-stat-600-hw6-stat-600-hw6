@@ -37,21 +37,25 @@ arma::uvec MyKmeans_c(const arma::mat& X, int K,
         Norm.col(j) += M_sqr;
       }
       
-      arma::colvec Y(n);
-      
       for(int j = 0; j < n; j++){
         Y(j) = arma::index_max(Norm.row(j));
       }
       
-      arma::colvec unique = arma::unique(Y);
+      arma::uvec unique = arma::unique(Y);
       if(unique.n_elem < K){
         break;
       }
       
+      for(int j =0; j < K; j++){
+        arma::uvec Y_index = arma::find(Y == j); 
+        M_2.row(j) = arma::sum(M_1.rows(Y_index), 0);
+      }
       
+      if(arma::approx_equal(M_1, M_2, "absdiff", 1e-16)){
+        return(Y);
+      }
       
-      
-      
+      M_1 = M_2;
     }
     
     // Returns the vector of cluster assignments
