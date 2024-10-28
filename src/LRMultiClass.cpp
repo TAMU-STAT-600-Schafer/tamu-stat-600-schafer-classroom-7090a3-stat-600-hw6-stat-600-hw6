@@ -15,75 +15,101 @@
 // eta - damping parameter, default 0.1
 // lambda - ridge parameter, default 1
 // beta_init - p x K matrix of starting beta values (always supplied in right format)
+
+// [[Rcpp::export]]
+arma::mat softmax_matrix_c(const arma::mat& X, const arma::mat& beta) {
+  // X: n * p
+  // beta: p * K
+  arma::mat Z = X * beta;  // n * K
+  
+  // Initialize Z_max vector
+  arma::vec Z_max(Z.n_rows);
+  
+  // Get maximum for each row using a loop (to match R implementation)
+  for(unsigned int i = 0; i < Z.n_rows; i++) {
+    Z_max(i) = max(Z.row(i));
+  }
+  
+  // Calculate exponentials with numerical stability
+  std::cout << "softmax_matrix.each_row";
+
+  arma::mat Z_exp = exp(Z.each_col() - Z_max);
+  arma::vec Z_sum = sum(Z_exp, 1);  // rowSums equivalent
+  
+  // Return probabilities
+  return Z_exp.each_col() / Z_sum;
+}
+
+// [[Rcpp::export]]
+double loss_c(const arma::uvec& y, const arma::mat& P, const arma::mat& beta) {
+  // beta p * K
+  // P n * K
+  double sum1 = 0;
+  
+  // Sum of log likelihood
+  for(unsigned int k = 0; k < P.n_cols; k++) {
+    for(unsigned int i = 0; i < y.n_elem; i++) {
+      if(y(i) == k) {
+        sum1 += log(P(i, k));
+      }
+    }
+  }
+  return -sum1 + accu(beta % beta);  // Note: sum(beta^2) in R becomes accu(beta % beta)
+}
+
+
 // [[Rcpp::export]]
 Rcpp::List LRMultiClass_c(const arma::mat& X, const arma::uvec& y, const arma::mat& beta_init,
-                               int numIter = 50, double eta = 0.1, double lambda = 1){
-    // All input is assumed to be correct
-    
-    // Initialize some parameters
-    int K = max(y) + 1; // number of classes
-    int p = X.n_cols;
-    int n = X.n_rows;
-    std::cout << "after kpn";
-    arma::mat beta = beta_init; // to store betas and be able to change them if needed
-    arma::vec objective(numIter + 1); // to store objective values
-    
-    std::cout << "after initalization";
-    
-    // Initialize anything else that you may need
-    // Initialize probability matrix
-    arma::mat P = arma::zeros(n, K);
-    
-    // Calculate initial probabilities and objective value
-    arma::mat XB = X * beta;
-    
-    XB.each_row() -= arma::max(XB, 0);  // Numerical stability
-    arma::mat exp_XB = arma::exp(XB);
-    arma::vec row_sums = arma::sum(exp_XB, 1);
-    P = exp_XB.each_col() / row_sums;
-    
-    // Calculate initial objective value
-    double reg_term = 0.5 * lambda * accu(beta % beta);
-    objective(0) = -accu(arma::log(P.elem(arma::find(P > 0)))) + reg_term;
-    std::cout << "Before ForLOOp";
-    // Newton's method cycle
-    for(int iter = 0; iter < numIter; iter++) {
-      for(int k = 0; k < K; k++) {
-        // Calculate weights
-        arma::vec w = P.col(k) % (1 - P.col(k));
-        
-        // Create weighted X
-        arma::mat X_weighted = X.each_col() % w;
-        
-        // Calculate XtWX
-        arma::mat XtWX = X.t() * X_weighted;
-        std::cout << "after XtWX";
-        // Create indicator vector for current class
-        arma::vec y_indicator = arma::conv_to<arma::vec>::from(y == k);
-        // Calculate gradient and add regularization
-        arma::vec grad = X.t() * (P.col(k) - y_indicator) + lambda * beta.col(k);
-        std::cout << "after gradient step";
-        // Add regularization to Hessian
-        arma::mat hessian = XtWX + lambda * arma::eye(p, p);
-        
-        // Update beta using damped Newton step
-        beta.col(k) -= eta * arma::solve(hessian, grad);
-      }
+                          int numIter = 50, double eta = 0.1, double lambda = 1) {
+  int p = X.n_cols;
+  int K = arma::max(y) + 1;  // number of classes
+  
+  arma::mat beta = beta_init;
+  arma::vec objective(numIter + 1);
+  
+  // Calculate initial probabilities
+  arma::mat P = softmax_matrix_c(X, beta_init);
+  
+  // Calculate initial objective value
+  objective(0) = loss_c(y, P, beta_init);
+  
+  // Newton's method cycle
+  for(int i = 0; i < numIter; i++) {
+    for(int k = 0; k < K; k++) {
+      // Calculate weights
+      arma::vec w = P.col(k) % (1 - P.col(k));
       
-      // Update probabilities for next iteration
-      XB = X * beta;
-      XB.each_row() -= arma::max(XB, 0);  // Numerical stability
-      exp_XB = arma::exp(XB);
-      row_sums = arma::sum(exp_XB, 1);
-      P = exp_XB.each_col() / row_sums;
+      // Create weighted X (matching R's sweep operation)
+      arma::mat X_weighted = X;
+      std::cout << "before X_weighted.each_row";
       
-      // Calculate objective value for this iteration
-      reg_term = 0.5 * lambda * accu(beta % beta);
-      objective(iter + 1) = -accu(arma::log(P.elem(arma::find(P > 0)))) + reg_term;
+      X_weighted.each_col() % w;
+      std::cout << "after X_weighted.each_row";
+      // Calculate XtWX
+      arma::mat XtWX = X.t() * X_weighted;
+      
+      // Create indicator vector for current class (k-1 to match R indexing)
+      arma::vec y_indicator = arma::conv_to<arma::vec>::from(y == k);
+      
+      // Calculate gradient and add regularization
+      arma::vec grad = X.t() * (P.col(k) - y_indicator) + lambda * beta.col(k);
+      
+      // Add regularization to Hessian
+      arma::mat hessian = XtWX + lambda * arma::eye(p, p);
+      
+      // Update beta using damped Newton step
+      beta.col(k) -= eta * solve(hessian, grad);
     }
     
+    // Update probabilities for next iteration
+    P = softmax_matrix_c(X, beta);
     
-    // Create named list with betas and objective values
-    return Rcpp::List::create(Rcpp::Named("beta") = beta,
-                              Rcpp::Named("objective") = objective);
+    // Calculate objective value for this iteration
+    objective(i + 1) = loss_c(y, P, beta);
+  }
+  
+  return Rcpp::List::create(
+    Rcpp::Named("beta") = beta,
+    Rcpp::Named("objective") = objective
+  );
 }
