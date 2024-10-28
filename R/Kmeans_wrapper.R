@@ -13,7 +13,10 @@
 MyKmeans <- function(X, K, M = NULL, numIter = 100){
   
   n = nrow(X) # number of rows in X
-  
+  M1 <- matrix(0, K, dim(X)[2], byrow=TRUE)
+  X1 <- matrix(0, n, dim(X)[2])
+  X1 <- X1 + as.matrix(X)
+
   # Check whether M is NULL or not. If NULL, initialize based on K random points from X. If not NULL, check for compatibility with X dimensions.
   
   if(is.null(M)){
@@ -54,7 +57,7 @@ MyKmeans <- function(X, K, M = NULL, numIter = 100){
   }
   
   # Call C++ MyKmeans_c function to implement the algorithm
-  Y = MyKmeans_c(X, K, M1, numIter)
+  Y = MyKmeans_c(X1, K, M1, numIter)
   
   # Return the class assignments
   return(Y)
