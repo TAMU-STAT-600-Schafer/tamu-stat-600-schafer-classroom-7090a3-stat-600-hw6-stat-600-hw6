@@ -19,12 +19,12 @@ arma::uvec MyKmeans_c(const arma::mat& X, int K,
   // Initialize some parameters
   int n = X.n_rows;
   int p = X.n_cols;
-  arma::uvec Y(n); // to store cluster assignments
+  arma::uvec Y_1(n); // to store cluster assignments
+  arma::uvec Y_2(n); // to compare values between each iteration
   
   // Initialize any additional parameters if needed
   
-  arma::mat M_1 = M;
-  arma::mat M_2(K, p, arma::fill::zeros); 
+  arma::mat M_1 = M; // make a copy of M matrix
   arma::rowvec M_sum(p, arma::fill::zeros);
   arma::rowvec M_sqr;
   arma::mat Norm(n, K);
@@ -43,27 +43,31 @@ arma::uvec MyKmeans_c(const arma::mat& X, int K,
     
     for(int j = 0; j < n; j++){
       arma::rowvec norm_row = Norm.row(j);
-      Y(j) = norm_row.index_max();
+      Y_1(j) = norm_row.index_max();
     }
     
-    unique = arma::unique(Y);
+    unique = arma::unique(Y_1);
     if(unique.n_elem < K){
       break;
     }
     
-    for(int j =0; j < K; j++){
-      arma::uvec Y_index = arma::find(Y == j); 
-      arma::rowvec M_sum = arma::sum(X.rows(Y_index), 0);
-      M_2.row(j)= M_sum * (1.0 / Y_index.n_elem);
+    M_1.zeros();
+    for(int j = 0; j < n; j++){
+      M_1.row(Y_1(j)) += X.row(j);
     }
     
-    if(arma::approx_equal(M_1, M_2, "absdiff", 1e-16)){
-      return(Y);
+    for(int j = 0; j < K; j++){
+      arma::uvec Y_index = arma::find(Y_1 == j);
+      M_1.row(j) /= Y_index.n_elem;
     }
     
-    M_1 = M_2;
+    if(arma::all(Y_1 == Y_2)) {
+      return(Y_1);
+    }
+    
+    Y_2 = Y_1;
   }
   
   // Returns the vector of cluster assignments
-  return(Y);
+  return(Y_1);
 }
