@@ -53,7 +53,7 @@ LRMultiClass <- function(X, y, numIter = 50, eta = 0.1, lambda = 1, beta_init = 
     }
   }
   
-  sourceCpp("src/LRMultiClass.cpp")
+  sourceCpp("src/compare_C.cpp")
   # Call C++ LRMultiClass_c function to implement the algorithm
   print("After source")
   print(dim(X))
