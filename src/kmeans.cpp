@@ -42,8 +42,7 @@ arma::uvec MyKmeans_c(const arma::mat& X, int K,
     }
     
     for(int j = 0; j < n; j++){
-      arma::rowvec norm_row = Norm.row(j);
-      Y_1(j) = norm_row.index_max();
+      Y_1(j) = Norm.row(j).index_max();
     }
     
     unique = arma::unique(Y_1);
