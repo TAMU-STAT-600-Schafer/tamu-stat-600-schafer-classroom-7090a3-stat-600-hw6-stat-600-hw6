@@ -6,7 +6,6 @@ src/*.o
 src/*.so
 src/*.dll
 R/test.R
-R/FunctionsLR.R
 R/compare_r.R
 src/compare_C.cpp
 R/letter_example_test.R
