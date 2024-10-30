@@ -38,7 +38,7 @@ arma::mat softmax_matrix_c(const arma::mat& X, const arma::mat& beta) {
 }
 
 // [[Rcpp::export]]
-double loss_c(const arma::uvec& y, const arma::mat& P, const arma::mat& beta) {
+double loss_c(const arma::uvec& y, const arma::mat& P, const arma::mat& beta, const double lambda) {
   // beta p * K
   // P n * K
   double sum1 = 0;
@@ -50,7 +50,7 @@ double loss_c(const arma::uvec& y, const arma::mat& P, const arma::mat& beta) {
       }
     }
   }
-  return -sum1 + accu(beta % beta);  // Note: sum(beta^2) in R becomes accu(beta % beta)
+  return -sum1 + arma::dot(beta, beta) * (lambda / 2);  // Note: sum(beta^2) in R becomes accu(beta % beta)
 }
 
 
@@ -59,6 +59,7 @@ Rcpp::List LRMultiClass_c(const arma::mat& X, const arma::uvec& y, const arma::m
                           int numIter = 50, double eta = 0.1, double lambda = 1) {
   int p = X.n_cols;
   int K = arma::max(y) + 1;  
+  int n = X.n_rows;
   
   arma::mat beta = beta_init;
   arma::vec objective(numIter + 1);
@@ -67,15 +68,19 @@ Rcpp::List LRMultiClass_c(const arma::mat& X, const arma::uvec& y, const arma::m
   arma::mat P = softmax_matrix_c(X, beta_init);
   
   
-  objective(0) = loss_c(y, P, beta_init);
+  objective(0) = loss_c(y, P, beta_init, lambda);
   
   
   for(int i = 0; i < numIter; i++) {
     for(int k = 0; k < K; k++) {
       
       arma::vec w = P.col(k) % (1 - P.col(k));
+      arma::mat X_weighted = X;
       
-      arma::mat X_weighted = X.each_col() % w;
+      for(int j = 0; j < n; j++){
+        X_weighted.row(j) *= w(j);
+      }
+      
       //std::cout << "before X_weighted.each_row";
       
       //X_weighted.each_col() % w;
@@ -94,7 +99,7 @@ Rcpp::List LRMultiClass_c(const arma::mat& X, const arma::uvec& y, const arma::m
     
     P = softmax_matrix_c(X, beta);
     
-    objective(i + 1) = loss_c(y, P, beta);
+    objective(i + 1) = loss_c(y, P, beta,  lambda);
   }
   
   return Rcpp::List::create(
