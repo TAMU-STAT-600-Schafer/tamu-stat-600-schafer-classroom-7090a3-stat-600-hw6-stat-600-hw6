@@ -9,6 +9,7 @@
 #' @param beta_init 
 #'
 #' @return
+#' 
 #' @export
 #'
 #' @examples

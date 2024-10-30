@@ -30,7 +30,6 @@ arma::mat softmax_matrix_c(const arma::mat& X, const arma::mat& beta) {
   }
   
   // Calculate exponentials with numerical stability
-  std::cout << "softmax_matrix.each_row";
   
   arma::mat Z_exp = exp(Z.each_col() - Z_max);
   arma::vec Z_sum = sum(Z_exp, 1);  // rowSums equivalent
@@ -81,7 +80,6 @@ Rcpp::List LRMultiClass_c(const arma::mat& X, const arma::uvec& y, const arma::m
       
       // Create weighted X (matching R's sweep operation)
       arma::mat X_weighted = X;
-      std::cout << "before X_weighted.each_row";
       
       for(int j = 0; j < n; j++){
         X_weighted.row(j) *= w(j);
@@ -114,4 +112,4 @@ Rcpp::List LRMultiClass_c(const arma::mat& X, const arma::uvec& y, const arma::m
     Rcpp::Named("beta") = beta,
     Rcpp::Named("objective") = objective
   );
-} 
+}
