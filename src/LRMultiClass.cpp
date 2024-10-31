@@ -39,36 +39,39 @@ arma::mat softmax_matrix_c(const arma::mat& X, const arma::mat& beta) {
 
 // [[Rcpp::export]]
 double loss_c(const arma::uvec& y, const arma::mat& P, const arma::mat& beta, const double lambda) {
-  // beta p * K
-  // P n * K
-  double sum1 = 0;
+  
+  
+  double sum1 = 0; // Initialize summation variable
   
   for(unsigned int k = 0; k < P.n_cols; k++) {
     for(unsigned int i = 0; i < y.n_elem; i++) {
       if(y(i) == k) {
-        sum1 += log(P(i, k));
+        sum1 += log(P(i, k)); // Sum the log values of the indices of the Probability matrix that match the classification Y(i)
       }
     }
   }
-  return -sum1 + arma::dot(beta, beta) * (lambda / 2);  // Note: sum(beta^2) in R becomes accu(beta % beta)
+  return -sum1 + arma::dot(beta, beta) * (lambda / 2);  // Return loss function
 }
 
 
 // [[Rcpp::export]]
 Rcpp::List LRMultiClass_c(const arma::mat& X, const arma::uvec& y, const arma::mat& beta_init,
                           int numIter = 50, double eta = 0.1, double lambda = 1) {
+  
+  // Initialize dimension variables
   int p = X.n_cols;
   int K = arma::max(y) + 1;  
   int n = X.n_rows;
   
+  // Initialize beta matrix and a vector to store objective values at each iteration
   arma::mat beta = beta_init;
   arma::vec objective(numIter + 1);
   
   
-  arma::mat P = softmax_matrix_c(X, beta_init);
+  arma::mat P = softmax_matrix_c(X, beta_init); // Compute probability matrix P
   
   
-  objective(0) = loss_c(y, P, beta_init, lambda);
+  objective(0) = loss_c(y, P, beta_init, lambda); // Compute initial objective function value
   
   
   for(int i = 0; i < numIter; i++) {
@@ -81,10 +84,6 @@ Rcpp::List LRMultiClass_c(const arma::mat& X, const arma::uvec& y, const arma::m
         X_weighted.row(j) *= w(j);
       }
       
-      //std::cout << "before X_weighted.each_row";
-      
-      //X_weighted.each_col() % w;
-      //std::cout << "after X_weighted.each_row";
       
       arma::mat XtWX = X.t() * X_weighted;
 
