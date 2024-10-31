@@ -35,11 +35,10 @@ LRMultiClass <- function(X, y, numIter = 50, eta = 0.1, lambda = 1, beta_init = 
     stop("Lambda is negative")
   }
   
+  # Initialize dimension parameters
   n <- nrow(X)
   p <- ncol(X)
   K <- length(unique(y))
-  
-  
   
   # Check whether beta_init is NULL. If NULL, initialize beta with p x K matrix of zeroes. If not NULL, check for compatibility of dimensions with what has been already supplied.
   if (is.null(beta_init)) {
