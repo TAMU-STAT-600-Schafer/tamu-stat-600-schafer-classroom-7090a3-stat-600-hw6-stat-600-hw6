@@ -1,11 +1,11 @@
 Package: GroupHW
 Type: Package
-Title: What the package does (short line)
+Title: Kmeans and LRMulticlass in C++
 Version: 1.0
-Date: 2020-10-17
-Author: Who wrote it
-Maintainer: Who to complain to <yourfault@somewhere.net>
-Description: More about what it does (maybe more than one line)
+Date: 2024-10-30
+Author: Jingkun Lin, Benjamin Snyder
+Maintainer: b.snyder@tamu.edu
+Description: Contains Kmeans clustering algorithm and LRMulticlass algorithms optimised in C++.
 License: What license is it under?
 Imports: Rcpp (>= 1.0.5)
 LinkingTo: Rcpp, RcppArmadillo
