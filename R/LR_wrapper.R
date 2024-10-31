@@ -1,14 +1,14 @@
 
-#' Title
+#' L. R. Multiclass
 #'
-#' @param X 
-#' @param y 
-#' @param numIter 
-#' @param eta 
-#' @param lambda 
-#' @param beta_init 
+#' @param X         // Training data matrix
+#' @param y         // Training vector of classifications
+#' @param numIter   // Number of training iterations
+#' @param eta       // Convergence tolerance
+#' @param lambda    // Scalar for Frobenius norm penalty
+#' @param beta_init // Initial vector of beta values
 #'
-#' @return
+#' @returns returns a vector of class assignments on the training data
 #' @export
 #'
 #' @examples
@@ -55,12 +55,7 @@ LRMultiClass <- function(X, y, numIter = 50, eta = 0.1, lambda = 1, beta_init = 
   
   sourceCpp("src/LRMultiClass.cpp")
   # Call C++ LRMultiClass_c function to implement the algorithm
-  print("After source")
-  print(dim(X))
-  print(length(y))
-  print(dim(beta_init))
   out = LRMultiClass_c(X, y, beta_init, numIter, eta, lambda)
-  print("After c code")
   # Return the class assignments
   return(out)
 }
