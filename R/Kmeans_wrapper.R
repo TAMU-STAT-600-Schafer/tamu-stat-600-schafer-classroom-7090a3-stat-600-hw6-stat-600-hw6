@@ -1,4 +1,5 @@
 #' Title
+#' K-means s
 #'
 #' @param X 
 #' @param K 
