@@ -1,4 +1,3 @@
-
 #' L. R. Multiclass
 #'
 #' @param X         // Training data matrix
@@ -14,6 +13,13 @@
 #'
 #' @examples
 #' # Give example
+#' 
+#' X <- matrix(rnorm(1000), 10, 100)
+#' X <- cbind(rep(1, 10), X)
+#' y <- c(0, 1, 2, 3, 1, 2, 3, 1, 2, 3)
+#' 
+#' out <- LRMulticlass (X, y, 50, .1, 1, NULL)
+#' 
 LRMultiClass <- function(X, y, numIter = 50, eta = 0.1, lambda = 1, beta_init = NULL){
   print("Multi")
   # Compatibility checks from HW3 and initialization of beta_init
