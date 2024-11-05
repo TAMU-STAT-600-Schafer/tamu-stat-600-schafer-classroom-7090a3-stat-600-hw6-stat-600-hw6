@@ -32,6 +32,6 @@ X <- matrix(rnorm(1000), 10, 100)
 X <- cbind(rep(1, 10), X)
 y <- c(0, 1, 2, 3, 1, 2, 3, 1, 2, 3)
 
-out <- LRMulticlass (X, y, 50, .1, 1, NULL)
+out <- LRMultiClass(X, y, 50, .1, 1, NULL)
 
 }

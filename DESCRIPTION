@@ -14,7 +14,7 @@ Authors@R:
              email = "jkunlin@tamu.edu"))
 Maintainer: Benjamin Snyder <b.snyder@tamu.edu>
 Description: Contains K-means clustering algorithm and Logistic Regression Multiclass algorithms optimised in C++. Kmeans algorithm categorizes a matrix of covariates into a vector of cluster assignments based on minimum euclidean distance.L. R. Multicalss algorithm optimizes a vector of scalars to best fit an input training matrix with an input vector of classifications.
-License: GPL-3.0
+License: GPL (>= 3)
 Imports: Rcpp (>= 1.0.5)
 LinkingTo: Rcpp, RcppArmadillo
 RoxygenNote: 7.3.2
