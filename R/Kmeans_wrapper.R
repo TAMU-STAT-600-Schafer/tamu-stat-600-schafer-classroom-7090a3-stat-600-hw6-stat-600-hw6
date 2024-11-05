@@ -1,14 +1,16 @@
 #' Title
 #' K-means s
 #'
-#' @param X 
-#' @param K 
-#' @param M 
-#' @param numIter 
+#' @param X # n * p data matrix, n is the data size and p is the dimension
+#' @param K # K * p positions of centroids, K is the number of clusters and p is the dimension
+#' @param M # K * p initial centroids
+#' @param numIter # number of iteration
 #'
 #' @return Explain return
+#' This function returns a vector of length n containing the indices of cluster that
+#' each points have been assigned to 
 #' @export
-#'
+#' 
 #' @examples
 #' # Give example
 MyKmeans <- function(X, K, M = NULL, numIter = 100){
