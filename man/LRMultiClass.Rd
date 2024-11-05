@@ -2,29 +2,36 @@
 % Please edit documentation in R/LR_wrapper.R
 \name{LRMultiClass}
 \alias{LRMultiClass}
-\title{Title}
+\title{L. R. Multiclass}
 \usage{
 LRMultiClass(X, y, numIter = 50, eta = 0.1, lambda = 1, beta_init = NULL)
 }
 \arguments{
-\item{X}{}
+\item{X}{// Training data matrix}
 
-\item{y}{}
+\item{y}{// Training vector of classifications}
 
-\item{numIter}{}
+\item{numIter}{// Number of training iterations}
 
-\item{eta}{}
+\item{eta}{// Convergence tolerance}
 
-\item{lambda}{}
+\item{lambda}{// Scalar for Frobenius norm penalty}
 
-\item{beta_init}{}
+\item{beta_init}{// Initial vector of beta values}
 }
 \value{
-
+returns a vector of class assignments on the training data
 }
 \description{
-Title
+L. R. Multiclass
 }
 \examples{
 # Give example
+
+X <- matrix(rnorm(1000), 10, 100)
+X <- cbind(rep(1, 10), X)
+y <- c(0, 1, 2, 3, 1, 2, 3, 1, 2, 3)
+
+out <- LRMulticlass (X, y, 50, .1, 1, NULL)
+
 }

@@ -18,10 +18,9 @@
 #' X <- cbind(rep(1, 10), X)
 #' y <- c(0, 1, 2, 3, 1, 2, 3, 1, 2, 3)
 #' 
-#' out <- LRMulticlass (X, y, 50, .1, 1, NULL)
+#' out <- LRMultiClass(X, y, 50, .1, 1, NULL)
 #' 
 LRMultiClass <- function(X, y, numIter = 50, eta = 0.1, lambda = 1, beta_init = NULL){
-  print("Multi")
   # Compatibility checks from HW3 and initialization of beta_init
   if (!all(X[, 1] == 1)) {
     stop("The first column of X must be 1s.")
@@ -58,8 +57,7 @@ LRMultiClass <- function(X, y, numIter = 50, eta = 0.1, lambda = 1, beta_init = 
       stop("Numbers of categories of beta and Y don't match")
     }
   }
-  
-  sourceCpp("src/compare_C.cpp")
+
   # Call C++ LRMultiClass_c function to implement the algorithm
   out = LRMultiClass_c(X, y, beta_init, numIter, eta, lambda)
   # Return the class assignments

@@ -2,24 +2,28 @@
 % Please edit documentation in R/Kmeans_wrapper.R
 \name{MyKmeans}
 \alias{MyKmeans}
-\title{Title}
+\title{Title
+K-means s}
 \usage{
 MyKmeans(X, K, M = NULL, numIter = 100)
 }
 \arguments{
-\item{X}{}
+\item{X}{# n * p data matrix, n is the data size and p is the dimension}
 
-\item{K}{}
+\item{K}{# K * p positions of centroids, K is the number of clusters and p is the dimension}
 
-\item{M}{}
+\item{M}{# K * p initial centroids}
 
-\item{numIter}{}
+\item{numIter}{# number of iteration}
 }
 \value{
 Explain return
+This function returns a vector of length n containing the indices of cluster that
+each points have been assigned to
 }
 \description{
 Title
+K-means s
 }
 \examples{
 # Give example
