@@ -6,6 +6,37 @@
 
 using namespace Rcpp;
 
+#ifdef RCPP_USE_GLOBAL_ROSTREAM
+Rcpp::Rostream<true>&  Rcpp::Rcout = Rcpp::Rcpp_cout_get();
+Rcpp::Rostream<false>& Rcpp::Rcerr = Rcpp::Rcpp_cerr_get();
+#endif
+
+// softmax_matrix_c
+arma::mat softmax_matrix_c(const arma::mat& X, const arma::mat& beta);
+RcppExport SEXP _GroupHW_softmax_matrix_c(SEXP XSEXP, SEXP betaSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::RNGScope rcpp_rngScope_gen;
+    Rcpp::traits::input_parameter< const arma::mat& >::type X(XSEXP);
+    Rcpp::traits::input_parameter< const arma::mat& >::type beta(betaSEXP);
+    rcpp_result_gen = Rcpp::wrap(softmax_matrix_c(X, beta));
+    return rcpp_result_gen;
+END_RCPP
+}
+// loss_c
+double loss_c(const arma::uvec& y, const arma::mat& P, const arma::mat& beta, const double lambda);
+RcppExport SEXP _GroupHW_loss_c(SEXP ySEXP, SEXP PSEXP, SEXP betaSEXP, SEXP lambdaSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::RNGScope rcpp_rngScope_gen;
+    Rcpp::traits::input_parameter< const arma::uvec& >::type y(ySEXP);
+    Rcpp::traits::input_parameter< const arma::mat& >::type P(PSEXP);
+    Rcpp::traits::input_parameter< const arma::mat& >::type beta(betaSEXP);
+    Rcpp::traits::input_parameter< const double >::type lambda(lambdaSEXP);
+    rcpp_result_gen = Rcpp::wrap(loss_c(y, P, beta, lambda));
+    return rcpp_result_gen;
+END_RCPP
+}
 // LRMultiClass_c
 Rcpp::List LRMultiClass_c(const arma::mat& X, const arma::uvec& y, const arma::mat& beta_init, int numIter, double eta, double lambda);
 RcppExport SEXP _GroupHW_LRMultiClass_c(SEXP XSEXP, SEXP ySEXP, SEXP beta_initSEXP, SEXP numIterSEXP, SEXP etaSEXP, SEXP lambdaSEXP) {
@@ -38,6 +69,8 @@ END_RCPP
 }
 
 static const R_CallMethodDef CallEntries[] = {
+    {"_GroupHW_softmax_matrix_c", (DL_FUNC) &_GroupHW_softmax_matrix_c, 2},
+    {"_GroupHW_loss_c", (DL_FUNC) &_GroupHW_loss_c, 4},
     {"_GroupHW_LRMultiClass_c", (DL_FUNC) &_GroupHW_LRMultiClass_c, 6},
     {"_GroupHW_MyKmeans_c", (DL_FUNC) &_GroupHW_MyKmeans_c, 4},
     {NULL, NULL, 0}

@@ -3,11 +3,19 @@ Type: Package
 Title: Kmeans and LRMulticlass in C++
 Version: 1.0
 Date: 2024-10-30
-Author: Jingkun Lin, Benjamin Snyder
-Maintainer: jkunlin@tamu.edu, b.snyder@tamu.edu
+Authors@R: 
+    c(person(given = "Benjamin",
+             family = "Snyder",
+             role = c("aut","cre"),
+             email = "b.snyder@tamu.edu"),
+      person(given = "Jingkun",
+             family = "Lin",
+             role = c("aut"),
+             email = "jkunlin@tamu.edu"))
+Maintainer: Benjamin Snyder <b.snyder@tamu.edu>
 Description: Contains K-means clustering algorithm and Logistic Regression Multiclass algorithms optimised in C++. Kmeans algorithm categorizes a matrix of covariates into a vector of cluster assignments based on minimum euclidean distance.L. R. Multicalss algorithm optimizes a vector of scalars to best fit an input training matrix with an input vector of classifications.
 License: GPL-3.0
 Imports: Rcpp (>= 1.0.5)
 LinkingTo: Rcpp, RcppArmadillo
-RoxygenNote: 7.1.1
+RoxygenNote: 7.3.2
 Encoding: UTF-8
