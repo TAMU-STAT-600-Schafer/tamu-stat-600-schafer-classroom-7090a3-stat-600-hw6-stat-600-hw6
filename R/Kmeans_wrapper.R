@@ -1,10 +1,10 @@
 #' Title
 #' K-means s
 #'
-#' @param X # n * p data matrix, n is the data size and p is the dimension
-#' @param K # K * p positions of centroids, K is the number of clusters and p is the dimension
-#' @param M # K * p initial centroids
-#' @param numIter # number of iteration
+#' @param X         # n * p data matrix, n is the data size and p is the dimension
+#' @param K         # K * p positions of centroids, K is the number of clusters and p is the dimension
+#' @param M         # K * p initial centroids
+#' @param numIter   # number of iterations
 #'
 #' @return Explain return
 #' This function returns a vector of length n containing the indices of cluster that
@@ -12,7 +12,11 @@
 #' @export
 #' 
 #' @examples
-#' # Give example
+#' # Calling the MyKmeans function to sort the rows of a 20 x 50 matrix X
+#' # into 5 clusters, using the first 5 rows of X as the initial centroids.
+#' 
+#' X <- matrix(rnorm(1000), 20, 50)
+#' Y <- MyKmeans(X, 5, X[1:5, ], 100)
 MyKmeans <- function(X, K, M = NULL, numIter = 100){
   
   n = nrow(X) # number of rows in X
