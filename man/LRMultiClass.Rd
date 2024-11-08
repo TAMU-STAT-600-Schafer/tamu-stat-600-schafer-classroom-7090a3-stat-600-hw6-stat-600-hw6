@@ -20,13 +20,14 @@ LRMultiClass(X, y, numIter = 50, eta = 0.1, lambda = 1, beta_init = NULL)
 \item{beta_init}{// Initial vector of beta values}
 }
 \value{
-returns a vector of class assignments on the training data
+returns a coefficient matrix beta, and list of objective values from each iteration.
 }
 \description{
 L. R. Multiclass
 }
 \examples{
-# Give example
+# Calling the LRMultiClass function on a 10 x 101 Matrix X, with first column all ones,
+# and a vector of class assignments Y
 
 X <- matrix(rnorm(1000), 10, 100)
 X <- cbind(rep(1, 10), X)

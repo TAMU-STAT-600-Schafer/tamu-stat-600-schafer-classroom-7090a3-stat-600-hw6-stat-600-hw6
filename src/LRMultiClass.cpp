@@ -52,7 +52,8 @@ Rcpp::List LRMultiClass_c(const arma::mat& X, const arma::uvec& y, const arma::m
                           int numIter = 50, double eta = 0.1, double lambda = 1) {
   int n = X.n_rows;
   int p = X.n_cols;
-  int K = arma::max(y) + 1;  // number of classes
+  arma::uvec unique = arma::unique(y);
+  int K = unique.n_elem;                              // Number of classes
   
   // Initialize variables
   arma::mat Xt = X.t();                               // X transpose        
