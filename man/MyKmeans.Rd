@@ -14,7 +14,7 @@ MyKmeans(X, K, M = NULL, numIter = 100)
 
 \item{M}{# K * p initial centroids}
 
-\item{numIter}{# number of iteration}
+\item{numIter}{# number of iterations}
 }
 \value{
 Explain return
@@ -26,5 +26,9 @@ Title
 K-means s
 }
 \examples{
-# Give example
+# Calling the MyKmeans function to sort the rows of a 20 x 50 matrix X
+# into 5 clusters, using the first 5 rows of X as the initial centroids.
+
+X <- matrix(rnorm(1000), 20, 50)
+Y <- MyKmeans(X, 5, X[1:5, ], 100)
 }
