@@ -1,4 +1,4 @@
-## Homework 6 - Kmeans and Multi-logictic Rcpp with Armadillo implementation via R package
+## Homework 6 - Kmeans and Multi-logistic Rcpp with Armadillo implementation via R package
 
 # Introduction
 In this homework, you will practice basics of R package development, and the use of Rcpp Armadillo within R package based on your HWs 2 and 3. You will be working with another student on this assignment. To split the load, it is expected that you will
